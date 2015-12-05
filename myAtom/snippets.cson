@@ -1,0 +1,111 @@
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+
+# """ Triple lets normal meta-character code work: just paste what you'd actually write.
+
+# PHP defaults are here: https://github.com/atom/language-php/blob/master/snippets/language-php.cson
+    '.source.php':
+                'errlog':
+                        'prefix': 'log'
+                        'body': """error_log(__LINE__ . ": $1 is " . $$1);"""
+
+                'readable.errlog':
+                        'prefix': 'rlog'
+                        'body': """error_log(print_r($$1, true));"""
+
+                'trace.err':
+                        'prefix': 'trace'
+                        'body': """error_log(__LINE__ . " in " . __FILE__);"""
+
+                'boolean.errlog':
+                        'prefix': 'boolog'
+                        'body': """error_log($$1 ? '"$1" is true' : '"$1" is false');"""
+
+                'ternary':
+                        'px': 'ternary'
+                        'body': """$${1:returnVal} = ($$2) ? $$2 : ${3:false} ;"""
+
+                'getter':
+                        'prefix': 'getter'
+                        'body': """public function get$1()
+                                    {\n\t $this->$1; \n} """
+
+                'setter':
+                        'prefix': 'setter'
+                        'body': """ion set$1($$2)
+                                    {\n\t $this->$1 = $$2;
+                                    return true; } """
+
+                'statfunc':
+                        'prefix': 'staticfunction'
+                        'body': """pu $3 \n} """
+
+                'statfunc':
+                        'prefix': 'function'
+                        'body': """public function $1($$2) \n{\n\t $3 \n} """
+  '$… = ( … ) ? … : …':
+    		            'prefix': 'if?'
+    		            'body': '$${1:returnVal} = ($$2) ? $$2 : ${3:false} ;'
+
+                'if                        'prefix': 'if'
+                        'body': 'if ($$1) \n{\n;\t\n}'
+
+                'count':
+                        'pr               'body': 'error_log(__LINE__ . ": " . count($$1) );'
+
+                'foreach …':
+                                             'body': 'foreach ($${1:variable} as $${2:key} ${3:=> $${4:value}})
+                                    \n{\n\t${0:# code...}'trycatch.dbqry':
+                        'prefix': 'dbqry'
+                        'body': """
+        $dbConn = DbConnFactory::getDbConn(DbConnFactory::WRITABLE_D);
+
+        try
+        {
+            $query="$1";
+
+        if( !$stmt=$dbConn->prepare($query) )
+            { throw new Exception("Could not prepare statement in ".
+                            __FILE__." on line ".__LINE__.". ".$dbConn->error);
+            $stmt->bind_param("$2",$3);
+
+        if( !$stmt->execute() )
+            { throw new Exeption("Could not execute statement in ".
+                            __FILE__." on line ".__LINE__.". ".$dbConn->error); }
+
+            $stmt->store_re();
+            $stmt->bind_result($4);
+         while( $stmt->fetch() )
+           {
+                            $5
+            }
+            $stmt->close();
+        }
+        catch(Exception $e)
+        {
+            error($e->getMessage());
+            return false;
+        }
+        """
+
+ '.text.html.php':
+            'comment.html':
+                'prefix': 'hcomm'
+                'body': """<!--  $1  -->"""
+
+    '.source.js':
+            'con.log':
+                'prefix': 'log'
+              'body': """console.log("$1 is :" + $1);"""
+
+    '.se'       'comment.block':
+                'prefix': 'blockc'
+                'body': """///////////////////////////////////////////////
+                     ///////////////////////////////////////////////////    """

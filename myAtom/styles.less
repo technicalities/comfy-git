@@ -1,0 +1,25 @@
+# styles.less
+
+atom-text-editor::shadow .selectionbackground-color
+
+.scrollbars-visible-always /deep/ ::-webkit-scrollbar {
+    &-thumb {
+        background-color: white !important;
+        border: 2px;
+    }
+}
+
+atom-text-editor::shadow {
+  .highlights .bracket-matcher .region {
+    background-color: red;
+    trar 400ms; 
+
+  }
+  .span.text.html.php {
+      font-weight: bold;
+  }
+
+  .cursors.blink-off ~ .highlights .bracket-matcher .region {
+    background-color: yellow;
+  }
+}

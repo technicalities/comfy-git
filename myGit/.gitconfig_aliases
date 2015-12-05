@@ -1,0 +1,16 @@
+
+[alias]
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cgreen\\ [%cn]" --decorate
+	ch = checkout
+	br = branch
+	merma = merge master
+	amend = commit --amend
+	del = branch -d
+	unstage = reset HEAD --
+	unmod = checkout -- 			# then <file>
+	wipe = checkout -- .
+	rename  = branch -m 			# then <new_name>
+
+	last = log -1 HEAD
+	st = status -s
+	stv = status -b -v

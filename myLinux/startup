@@ -1,0 +1,5 @@
+# Startup commands
+gtk-redshift -l 55.858:4.259
+
+cd /usr/local/bin/clean/
+cleanup.sh
