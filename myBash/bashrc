@@ -11,18 +11,13 @@ alias gistv="git status -v -b"
 alias gdf="git diff --ignore-space-change"
 alias gdfs="git diff --staged --ignore-space-change"
 alias gitbr="git branch -v"
+alias gitmod="git add ."
 
 # I don't like the git diff view or kdiff:
 alias pipephp="echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php';
                 git diff --ignore-space-change >> 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'"
 
-# Finish him
-alias gitall="confirm 'Add the kitchen sink?' && git add --all"
-alias gitmod="git add ."
-alias gitco="confirm 'Have you removed traces?' && git commit"
-alias gitps="confirm 'Everyone will see this' && git push origin HEAD"
 # Emergency
-alias gitaarrgg="confirm 'Will ?' && git reset --hard HEAD"
 alias gitboo="git blame --"
 
 # Catch typos
@@ -58,5 +53,42 @@ confirm () {
             ;;
     esac
 }
+
+gitall () {
+  confirm 'Add the kitchen sink?' && git add --all
+}
+
+# Commit
+gitco () {
+    confirm 'Have you removed all traces?' && git commit
+}
+
+# Merge master into current:
+gitmerma () {
+    confirm 'Have you committed all yr new changes?' && git merge master
+}
+
+# Push current to origin:
+gitps () {
+    confirm 'Everyone will see this you know' && git push origin HEAD
+}
+
+# Send the diff to a php marked-up file. Open with 'pipe'
+gitpipe () {
+    echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'; 
+    git diff --ignore-space-change >> 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'
+}
+
+# Reset all staged changes to last commit state
+gitaarrgg () {
+    confirm 'Destroy all staged changes?';
+    git reset --hard HEAD    
+}
+
+# Checkout all unstaged changes to last commit state
+gitwipe () {
+    confirm 'Wipe all unstaged changes?' && git checkout -- .
+}
+
 
 # NOW source ~/.bashrc
