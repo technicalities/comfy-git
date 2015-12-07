@@ -10,3 +10,10 @@ Two big objections you often hear about aliasing Git are that 1) you'll be lost 
 * Make 'git ' implicit in Git Bash.
 * Prevent risky git commands with a confirm message.
 * Prevent atom from overwriting clipboard with Ctrl+C or +X if selection empty.
+
+(You could certainly overdo it with a function like this:
+
+> push () {
+>    git add -all && git commit && git push origin master
+> }
+)
