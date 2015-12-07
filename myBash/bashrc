@@ -34,11 +34,11 @@ alias gfds="gdfs"
 alias gfsd="gdfs"
 
 # Atom shortcuts
-alias scratch="atom '\\Current_commit.txt'"
-alias bashrc="atom ~/.bashrc"
-alias gitconfig="atom '\\.gitconfig'"
-alias snippets="atom '\\snippets.cson'"
-alias pipe="atom '\\new_diff.php'"
+alias scratch="atom '\\Current_commit.txt' &"
+alias bashrc="atom ~/.bashrc &"
+alias gitconfig="atom '\\.gitconfig' &"
+alias snippets="atom '\\snippets.cson' &"
+alias pipe="atom '\\new_diff.php' &"
 
 
 confirm () {
