@@ -14,6 +14,8 @@ Two big objections you often hear about aliasing Git are that 1) you'll be lost 
 (You could certainly overdo it with a function like this:
 
 > push () {
+
 >    git add -all && git commit && git push origin master
+
 > }
 )
