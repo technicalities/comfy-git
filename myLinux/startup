@@ -1,5 +1,5 @@
 # Startup commands
-gtk-redshift -l 55.858:4.259
+gtk-redshift -l {replace with your lat}:{replace with your lat}
 
 cd /usr/local/bin/clean/
 cleanup.sh
