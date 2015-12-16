@@ -11,7 +11,7 @@
     ]
     autoHideMenuBar: true
     audioBeep: false
-    projectHome: "C:\\Users\\gavin.leech\\Documents\\"
+    projectHome: "C:\\Users\\{user}\\Documents\\"
     openEmptyEditorOnStart: false
   editor:
     invisibles: {}
