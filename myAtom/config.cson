@@ -26,7 +26,7 @@
     usePreviewTabs: true
   "keyboard-localization": {}
   "save-session":
-    dataSaveFolder: "C:\\Users\\gavin.leech\\Documents"
+    dataSaveFolder: "C:\\Users\\{user}\\Documents"
     skipSavePrompt: false
   "markdown-preview":
     openPreviewInSplitPane: false
