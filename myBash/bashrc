@@ -1,19 +1,24 @@
-# Startup
-alias gup=". gitsetup.sh"         # Run startup script with 'gup':
+#############################################
+# Aliases for simple moves
+#############################################
+alias gup=". gitsetup.sh"                     # Run startup script with 'gup': https://github.com/technicalities/comfy-git/blob/master/myBash/gitsetup.sh
+alias gitbr="printf '\n' && git branch -v"
 alias goma="git checkout master"
 alias goback="git checkout @{-1}"
-alias gitnew="git checkout -b"
-alias gitpu="git pull origin"
+alias gotest="git checkout testing"
+alias gitpl="git pull origin master"
 
 # Prep
 alias gist="git status -s"
 alias gistv="git status -v -b"
 alias gdf="git diff --ignore-space-change"
 alias gdfs="git diff --staged --ignore-space-change"
-alias gitbr="git branch -v"
+alias gitlast="git diff HEAD^ HEAD"
+alias gitchanged="git log --name-status HEAD^..HEAD"
+alias githead="git rev-parse HEAD | GREP_COLORS='ms=34;1' grep $(git rev-parse --short=0 HEAD)"
 alias gitmod="git add ."
 
-# I don't like the git diff view or kdiff:
+# I don't like the git diff view or kdiff: syntaxify. Open with "pipe".
 alias pipephp="echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php';
                 git diff --ignore-space-change >> 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'"
 
@@ -41,26 +46,40 @@ alias snippets="atom '\\snippets.cson' &"
 alias pipe="atom '\\new_diff.php' &"
 
 
+#############################################
+# Functions
+#############################################
+
+# Confirmation prompt before serious commands
 confirm () {
-    read -r -p "${1:-Are you sure? [y/N]} " response
+    read -r -p "${1:-Are you sure about that? [y/N]} " response
     case $response in
-        [yY][eE][sS]|[yY])
-            true
-            ;;
+        [yY][eE][sS]|[yY]) 
+            true ;;
         *)
-            false
-            echo "Command not executed."
-            ;;
+            echo "Command not executed. Type 'y' next time"
+            false ;;
     esac
 }
 
+# Add all unstaged and untracked changes:
 gitall () {
-  confirm 'Add the kitchen sink?' && git add --all
+    confirm 'The kitchen sink?' && git add --all
 }
 
-# Commit
+# Commit with editor popup
 gitco () {
     confirm 'Have you removed all traces?' && git commit
+}
+
+# Inline commit. Pass commit msg
+gitcom () {
+    confirm 'Have you removed all traces?' && git commit -m $1   
+}
+
+# Start a new branch off master, ensuring current. Pass branch name.
+gitnew () {
+    confirm 'Update master and branch off it?' && goma && gitpl && git checkout -b $1
 }
 
 # Merge master into current:
@@ -70,7 +89,7 @@ gitmerma () {
 
 # Push current to origin:
 gitps () {
-    confirm 'Everyone will see this you know' && git push origin HEAD
+    confirm 'Everyone will see this' && git push origin HEAD
 }
 
 # Send the diff to a php marked-up file. Open with 'pipe'
@@ -89,6 +108,15 @@ gitaarrgg () {
 gitwipe () {
     confirm 'Wipe all unstaged changes?' && git checkout -- .
 }
+
+
+
+# Startup, choose your default bash wd:
+# moveHome() { 
+    # cd 'C:\\Users\\gavin.leech\\'
+# }
+# moveHome
+# export HOME='C:\\Users\\gavin.leech\\'
 
 
 # NOW source ~/.bashrc
