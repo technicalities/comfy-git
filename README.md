@@ -6,8 +6,8 @@ Two big objections you often hear about aliasing Git are that 1) you'll be lost 
 
 ### Examples of what these do:
 
-* lots of aliases for common commands, cutting keystrokes by 90%
-* Make 'git ' implicit in Git Bash.
+* lots of aliases for common commands, cutting keystrokes by 60%
+* Risky, to do: Make 'git ' implicit in Git Bash.
 * Prevent risky git commands with a confirm message.
 * Prevent atom from overwriting clipboard with Ctrl+C or +X if selection empty.
 
