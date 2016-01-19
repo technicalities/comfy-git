@@ -9,7 +9,6 @@ alias gotest="git checkout testing"
 alias gitpl="git pull origin master"
 
 # Prep
-alias gist="git status -s"
 alias gistv="git status -v -b"
 alias gdf="git diff --ignore-space-change"
 alias gdfs="git diff --staged --ignore-space-change"
@@ -69,6 +68,17 @@ confirmInt () {
             echo "Command not executed. Type a single digit next time"
             false ;;
     esac
+}
+
+# Just a null message onto git status calls return nothing:
+gist () {
+    status=$(git status -s)
+    
+    if [ -n $status ]; then 
+        echo "Nothing to declare."
+    else
+        echo $status
+    fi
 }
 
 # Add all unstaged and untracked changes:
