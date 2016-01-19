@@ -92,7 +92,7 @@ confirmInt () {
 gist () {
     status=$(git status -s)
     
-    if [ -n $status ]; then 
+    if [[ -n $status ]]; then 
         echo "Nothing to declare."
     else
         echo $status
