@@ -90,13 +90,13 @@ confirmInt () {
 
 # Just add a null message to clean git status calls:
 gist () {
-    status=$(git status -s)
+  status=$(git status -s)
     
-    if [[ -n $status ]]; then 
-        echo "Nothing to declare."
-    else
-        echo $status
-    fi
+  if [[ -z $status ]] 
+      then echo "Nothing to declare."
+  else
+      echo $status
+  fi
 }
 
 # Add all unstaged and untracked changes:
