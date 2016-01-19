@@ -23,26 +23,44 @@ alias pipephp="echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php';
 
 # Emergency
 alias gitboo="git blame --"
+# Full functions, see section below
+# gitall ()   # Add all unstaged and untracked changes:
+# gitco ()    # Commit with editor popup
+# gitcom ()   # Inline commit. $1 is the commit msg
+# gitnew ()   # Start a new branch off master, ensuring it's current. Pass branch name.
+# gitmerma () # Merge master into current:
+# gitps ()    # Push current to origin:
+# gitpipe ()  # Send the diff to a php marked-up file. Open with 'pipe'
+# gitaarrgg() # Reset all staged changes to last commit state
+# gitwipe ()  # Checkout all unstaged changes to last commit state
+# gitsquash() # Merge the last $1 commits into one commit :
 
 # Catch typos
 alias gt='git '
-alias gits='gist'
-alias gitsv='gistv'
-alias gitst='gist'
-alias gitstv='gistv'
+alias gtbr='gitbr'
+alias gits='gist' 
+alias gitsv='gistv' 
+alias gitst='gist' 
+alias gitstv='gistv' 
 alias gtstv='gistv'
 alias gtsvt='gistv'
 alias gitsvt='gistv'
+alias gddf='gdf'
 alias gfd='gdf'
 alias gfds="gdfs"
 alias gfsd="gdfs"
 
 # Atom shortcuts
-alias scratch="atom '\\Current_commit.txt' &"
+alias albums="atom 'C:\\Users\\gavin.leech\\Tooling around\\albums.md' &"
+alias scratch="atom 'C:\\Users\\gavin.leech\\Desktop\\Current_commit.txt' &"
 alias bashrc="atom ~/.bashrc &"
-alias gitconfig="atom '\\.gitconfig' &"
-alias snippets="atom '\\snippets.cson' &"
-alias pipe="atom '\\new_diff.php' &"
+alias gitconf="atom 'C:\\Users\\gavin.leech\\.gitconfig' &"
+alias snippets="atom 'C:\\Users\\gavin.leech\\.atom\\snippets.cson' &"
+alias pipe="atom 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php' &"
+
+# Writing my own PS1 breaks the __git_ps1 branch autoexpand...
+#export PS1=\[\033]0;$MSYSTEM:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[\033[33m\]\w$(__git_ps1)\[\033[0m\]\n$ 
+
 
 #############################################
 # Functions
@@ -70,7 +88,7 @@ confirmInt () {
     esac
 }
 
-# Just a null message onto git status calls return nothing:
+# Just add a null message to clean git status calls:
 gist () {
     status=$(git status -s)
     
@@ -93,7 +111,7 @@ gitco () {
 
 # Inline commit. $1 is the commit msg
 gitcom () {
-    confirm 'Have you removed all traces?' && git commit -m $1   
+    confirm 'Have you removed all traces?' && git commit -m "$1"
 }
 
 # Start a new branch off master, ensuring it's current. Pass branch name.
@@ -104,6 +122,15 @@ gitnew () {
 # Merge master into current:
 gitmerma () {
     confirm 'Have you committed all yr new changes?' && git merge master
+}
+
+# Standard procedure for dealing with merge conflicts: 
+gitmerhelp () {
+    goma && git pull &&     # pull to 'master'
+    goback && gitmerma &&   # then merge updated 'master' into troubled branch
+    git mergetool &&        # and investigate
+    echo "Use 'git clean -f' to rid yourself of these:" && 
+    git clean -f -n         # and consider dumping those orig backups
 }
 
 # Push current to origin:
@@ -128,12 +155,12 @@ gitwipe () {
     confirm 'Wipe all unstaged changes?' && git checkout -- .
 }
 
-# Merge the last $1 commits into one commit with message $2:
+# Merge the last $1 commits into one commit with msg $2 :
 gitsquash () {
     confirmInt $1 &&
     confirm "Merge the last $1 commits?" && 
     git reset --soft HEAD~$1 &&
-    git commit -m $2
+    git commit -m "$2"
 }
 
 # Startup, choose your default bash wd:
