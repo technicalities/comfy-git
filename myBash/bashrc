@@ -158,9 +158,15 @@ gitwipe () {
 # Merge the last $1 commits into one commit with msg $2 :
 gitsquash () {
     confirmInt $1 &&
-    confirm "Merge the last $1 commits?" && 
+    confirm "Merge last commit with the previous $1 commits?" &&
     git reset --soft HEAD~$1 &&
-    git commit -m "$2"
+    
+    if [[ ! -z "$2" ]]
+        then git commit -m "$2"
+    else 
+        read -r -p "Go on, enter a commit message then: " response
+        git commit -m "$response"
+    fi
 }
 
 # Startup, choose your default bash wd:
