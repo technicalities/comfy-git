@@ -1,7 +1,7 @@
 #############################################
 # Aliases for simple moves
 #############################################
-alias gup=". gitsetup.sh"                     # Run startup script with 'gup': https://github.com/technicalities/comfy-git/blob/master/myBash/gitsetup.sh
+alias gup=". git.sh"
 alias gitbr="printf '\n' && git branch -v"
 alias goma="git checkout master"
 alias goback="git checkout @{-1}"
@@ -9,6 +9,7 @@ alias gotest="git checkout testing"
 alias gitpl="git pull origin master"
 
 # Prep
+alias gist="git status -s"
 alias gistv="git status -v -b"
 alias gdf="git diff --ignore-space-change"
 alias gdfs="git diff --staged --ignore-space-change"
@@ -17,18 +18,13 @@ alias gitchanged="git log --name-status HEAD^..HEAD"
 alias githead="git rev-parse HEAD | GREP_COLORS='ms=34;1' grep $(git rev-parse --short=0 HEAD)"
 alias gitmod="git add ."
 
-# I don't like the git diff view or kdiff: syntaxify. Open with "pipe".
-alias pipephp="echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php';
-                git diff --ignore-space-change >> 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'"
-
-# Emergency
-alias gitboo="git blame --"
-# Full functions, see section below
+## Full functions, see section below
 # gitall ()   # Add all unstaged and untracked changes:
 # gitco ()    # Commit with editor popup
 # gitcom ()   # Inline commit. $1 is the commit msg
-# gitnew ()   # Start a new branch off master, ensuring it's current. Pass branch name.
+# gitnew ()   # Start a new branch off master, ensuring it's current. 
 # gitmerma () # Merge master into current:
+# gitmerhelp () # Merge conflicts standard procedure
 # gitps ()    # Push current to origin:
 # gitpipe ()  # Send the diff to a php marked-up file. Open with 'pipe'
 # gitaarrgg() # Reset all staged changes to last commit state
@@ -51,20 +47,20 @@ alias gfds="gdfs"
 alias gfsd="gdfs"
 
 # Atom shortcuts
-alias albums="atom 'C:\\Tooling around\\albums.md' &"
-alias scratch="atom 'C:\\Desktop\\Current_commit.txt' &"
+alias albums="atom 'C:\\Users\\gla\\Tooling around\\albums.md' &"
+alias scratch="atom 'C:\\Users\\gla\\Desktop\\Current_commit.txt' &"
 alias bashrc="atom ~/.bashrc &"
-alias gitconf="atom 'C:\\.gitconfig' &"
-alias snippets="atom 'C:\\.atom\\snippets.cson' &"
-alias pipe="atom 'C:\\Desktop\\new_diff.php' &"
-
-# Writing my own PS1 breaks the __git_ps1 branch autoexpand...
-#export PS1=\[\033]0;$MSYSTEM:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[\033[33m\]\w$(__git_ps1)\[\033[0m\]\n$ 
+alias sobash="source ~/.bashrc"     # much shortcut
+alias gitignore="atom 'C:\\Users\\gla\\Documents\freetobook\\.gitignore' &"
+alias gitconf="atom 'C:\\Users\\gla\\.gitconfig' &"
+alias snippets="atom 'C:\\Users\\gla\\.atom\\snippets.cson' &"
+alias lepipe="atom 'C:\\Users\\gla\\Desktop\\new_diff.php' &"
 
 
 #############################################
 # Functions
 #############################################
+# These are as much personal docs of standard procedure as they are shortcuts
 
 # Confirmation prompt before serious commands
 confirm () {
@@ -88,15 +84,35 @@ confirmInt () {
     esac
 }
 
-# Just add a null message to clean git status calls:
-gist () {
-  status=$(git status -s)
+# Check $1 > 1
+confirmPlural () {
+    if [[ ! $1 -gt 1 ]]
+        then echo "Doesn't make sense to squash one commit into itself"
+        false
+    else
+        true
+    fi
+}
+
+checkNoTraces () {
+    case $1 in [pP][hH][pP])
+        logString='error_log' ;;
+    [jJ][sS])
+        logString='console.log' ;;
+    *)
+        read -r -p "Specify a language: " response
+        checkNoTraces $response
+    esac
     
-  if [[ -z $status ]] 
-      then echo "Nothing to declare."
-  else
-      echo $status
-  fi
+    if [[ ! -z $(git diff --staged -G$logString) ]]
+        then read -r -p "There are traces in the diff! Is that intentional?" response
+            case $response in [yY][eE][sS]|[yY]) 
+                true ;;
+            *)
+                false ;;
+            esac
+    else true
+    fi
 }
 
 # Add all unstaged and untracked changes:
@@ -104,33 +120,59 @@ gitall () {
     confirm 'The kitchen sink?' && git add --all
 }
 
-# Commit with editor popup
+# Commit with editor popup. #1 is project language.
 gitco () {
-    confirm 'Have you removed all traces?' && git commit
+    if [[ -z $1 ]]
+        then lang='PHP'
+    else
+        lang=$1
+    fi
+    checkNoTraces $lang && 
+    git commit
 }
 
 # Inline commit. $1 is the commit msg
 gitcom () {
-    confirm 'Have you removed all traces?' && git commit -m "$1"
+    if [[ -z $2 ]]
+        then lang='PHP'
+    else
+        lang=$2
+    fi
+    checkNoTraces $lang && 
+    git commit -m "$1"
+}
+
+# Rename current branch to name $1
+gitrename () {
+    current=$(git rev-parse --abbrev-ref HEAD)
+    confirm "Rename branch $current to $1?" && git branch -m "$current" "$1"
 }
 
 # Start a new branch off master, ensuring it's current. Pass branch name.
 gitnew () {
-    confirm 'Update master and branch off it?' && goma && gitpl && git checkout -b $1
+    if [[ -z $1 ]]
+        then read -r -p "Name new branch: " response
+             name=$response
+    else
+        name=$1
+    fi
+    
+    confirm 'Update master and branch off it?' && 
+    goma && gitpl && git checkout -b $name
 }
 
 # Merge master into current:
 gitmerma () {
-    confirm 'Have you committed all yr new changes?' && git merge master
+    confirm 'Have you committed all yr new changes?' &&
+    goma && gitpl && goback && 
+    git merge master
 }
 
 # Standard procedure for dealing with merge conflicts: 
-gitmerhelp () {
-    goma && git pull &&     # pull to 'master'
-    goback && gitmerma &&   # then merge updated 'master' into troubled branch
+mergetool () {
     git mergetool &&        # and investigate
-    echo "Use 'git clean -f' to rid yourself of these:" && 
-    git clean -f -n         # and consider dumping those orig backups
+    echo "\n\n***\nUse 'git clean -f' to rid yourself of these:" && 
+    git clean -f -n         # and look at those orig backups
 }
 
 # Push current to origin:
@@ -140,13 +182,13 @@ gitps () {
 
 # Send the diff to a php marked-up file. Open with 'pipe'
 gitpipe () {
-    echo '<?php' > 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'; 
-    git diff --ignore-space-change >> 'C:\\Users\\gavin.leech\\Desktop\\new_diff.php'
+    echo '<?php' > 'C:\\Users\\gla\\Desktop\\new_diff.php'; 
+    git diff --ignore-space-change >> 'C:\\Users\\gla\\Desktop\\new_diff.php'
 }
 
 # Reset all staged changes to last commit state
 gitaarrgg () {
-    confirm 'Destroy all staged changes?';
+    confirm 'Destroy all staged changes?' &&
     git reset --hard HEAD    
 }
 
@@ -156,11 +198,12 @@ gitwipe () {
 }
 
 # Merge the last $1 commits into one commit with msg $2 :
-gitsquash () {
-    confirmInt $1 &&
-    confirm "Merge last commit with the previous $1 commits?" &&
+gitsquash () {        
+    confirmInt $1 && confirmPlural $1 &&
+    confirm "Merge the previous $1 commits?" &&
     git reset --soft HEAD~$1 &&
     
+    # Check if a string was entered as $2 for comtmsg:
     if [[ ! -z "$2" ]]
         then git commit -m "$2"
     else 
@@ -168,13 +211,6 @@ gitsquash () {
         git commit -m "$response"
     fi
 }
-
-# Startup, choose your default bash wd:
-# moveHome() { 
-    # cd 'C:\\Users\\gavin.leech\\'
-# }
-# moveHome
-# export HOME='C:\\Users\\gavin.leech\\'
 
 
 # NOW source ~/.bashrc
