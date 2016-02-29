@@ -17,12 +17,13 @@ alias gitlast="git diff HEAD^ HEAD"
 alias gitchanged="git log --name-status HEAD^..HEAD"
 alias githead="git rev-parse HEAD | GREP_COLORS='ms=34;1' grep $(git rev-parse --short=0 HEAD)"
 alias gitmod="git add ."
+alias logself="git log --no-merges --first-parent"
 
 ## Full functions, see section below
 # gitall ()   # Add all unstaged and untracked changes:
 # gitco ()    # Commit with editor popup
 # gitcom ()   # Inline commit. $1 is the commit msg
-# gitnew ()   # Start a new branch off master, ensuring it's current. 
+# gitnew ()   # Start a new branch off master, ensuring it's current. Pass branch name.
 # gitmerma () # Merge master into current:
 # gitmerhelp () # Merge conflicts standard procedure
 # gitps ()    # Push current to origin:
@@ -47,20 +48,21 @@ alias gfds="gdfs"
 alias gfsd="gdfs"
 
 # Atom shortcuts
-alias albums="atom 'C:\\Users\\gla\\Tooling around\\albums.md' &"
-alias scratch="atom 'C:\\Users\\gla\\Desktop\\Current_commit.txt' &"
+alias albums="atom '$TOOL\\albums.md' &"
+alias scratch="atom '$DESK\\Current_commit.txt' &"
 alias bashrc="atom ~/.bashrc &"
+alias bashpro="atom ~/.bash_profile &"
 alias sobash="source ~/.bashrc"     # much shortcut
-alias gitignore="atom 'C:\\Users\\gla\\Documents\freetobook\\.gitignore' &"
-alias gitconf="atom 'C:\\Users\\gla\\.gitconfig' &"
-alias snippets="atom 'C:\\Users\\gla\\.atom\\snippets.cson' &"
-alias lepipe="atom 'C:\\Users\\gla\\Desktop\\new_diff.php' &"
+alias gitignore="atom '$F2B\.gitignore' &"
+alias gitconf="atom '$ME\\.gitconfig' &"
+alias snippets="atom '$ATOM\\snippets.cson' &"
+alias lepipe="atom '$DESK\\new_diff.php' &"
 
 
 #############################################
-# Functions
+# Test functions
 #############################################
-# These are as much personal docs of standard procedure as they are shortcuts
+# These are as much personal docs of standard procedure as shortcuts
 
 # Confirmation prompt before serious commands
 confirm () {
@@ -102,10 +104,11 @@ checkNoTraces () {
     *)
         read -r -p "Specify a language: " response
         checkNoTraces $response
+        return
     esac
     
     if [[ ! -z $(git diff --staged -G$logString) ]]
-        then read -r -p "There are traces in the diff! Is that intentional?" response
+        then read -r -p "There are traces in the diff! Ok? " response
             case $response in [yY][eE][sS]|[yY]) 
                 true ;;
             *)
@@ -115,6 +118,19 @@ checkNoTraces () {
     fi
 }
 
+defaultPHP () {
+    if [[ -z $1 ]]
+        then lang='PHP'
+    else
+        lang=$1
+    fi
+    return $lang
+}
+
+
+#############################################
+#  Git Functions. User emptor
+#############################################
 # Add all unstaged and untracked changes:
 gitall () {
     confirm 'The kitchen sink?' && git add --all
@@ -122,24 +138,24 @@ gitall () {
 
 # Commit with editor popup. #1 is project language.
 gitco () {
-    if [[ -z $1 ]]
-        then lang='PHP'
-    else
-        lang=$1
-    fi
+    lang=defaultPHP $1 
+    
     checkNoTraces $lang && 
     git commit
 }
 
-# Inline commit. $1 is the commit msg
+# Inline commit. $1 is the commit msg, $2 the language to check traces for
 gitcom () {
-    if [[ -z $2 ]]
-        then lang='PHP'
-    else
-        lang=$2
-    fi
+    lang=defaultPHP $2 
+    
     checkNoTraces $lang && 
     git commit -m "$1"
+}
+
+# Compare commit HEAD~$1 to commit HEAD~($1+1). (gitcheck 0) == gitlast
+gitcheck () {
+    oneUp=$((1+1))
+    git diff HEAD~$oneUp HEAD~$1
 }
 
 # Rename current branch to name $1
@@ -161,6 +177,18 @@ gitnew () {
     goma && gitpl && git checkout -b $name
 }
 
+# What files would change if we merged current branch into $1?
+diffmer () {
+    if [[ -z $1 ]]
+        then read -r -p "Compare HEAD branch to which branch?: " response
+             branch=$response
+    else
+        branch=$1
+    fi
+    
+    git diff --name-status $branch..HEAD
+}
+
 # Merge master into current:
 gitmerma () {
     confirm 'Have you committed all yr new changes?' &&
@@ -171,8 +199,8 @@ gitmerma () {
 # Standard procedure for dealing with merge conflicts: 
 mergetool () {
     git mergetool &&        # and investigate
-    echo "\n\n***\nUse 'git clean -f' to rid yourself of these:" && 
-    git clean -f -n         # and look at those orig backups
+    printf "\n\n***\nUse 'git clean -f' to rid yourself of these:\n" && 
+    git clean -f -n         # look at those orig backups
 }
 
 # Push current to origin:
@@ -182,8 +210,10 @@ gitps () {
 
 # Send the diff to a php marked-up file. Open with 'pipe'
 gitpipe () {
-    echo '<?php' > 'C:\\Users\\gla\\Desktop\\new_diff.php'; 
-    git diff --ignore-space-change >> 'C:\\Users\\gla\\Desktop\\new_diff.php'
+    diffPath="$ME\\Desktop\\new_diff.php"
+    
+    echo '<?php' > $diffPath; 
+    git diff --ignore-space-change >> $diffPath
 }
 
 # Reset all staged changes to last commit state
@@ -212,5 +242,4 @@ gitsquash () {
     fi
 }
 
-
-# NOW source ~/.bashrc
+# NOW sobash
