@@ -6,7 +6,8 @@ alias gitbr="printf '\n' && git branch -v"
 alias goma="git checkout master"
 alias goback="git checkout @{-1}"
 alias gotest="git checkout testing"
-alias gitpl="git pull origin master"
+alias gitpl="git pull"
+alias gitplma="git pull origin master"
 
 # Prep
 alias gist="git status -s"
