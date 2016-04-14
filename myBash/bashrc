@@ -1,7 +1,7 @@
 #############################################
 # Aliases for simple moves
 #############################################
-alias gup=". git.sh"
+alias gup=". gitsetup.sh"
 alias gitbr="printf '\n' && git branch -v"
 alias goma="git checkout master"
 alias goback="git checkout @{-1}"
@@ -99,7 +99,7 @@ confirmPlural () {
 
 checkNoTraces () {
     case $1 in [pP][hH][pP])
-        logString='error_log' ;;
+        logString='(error_log)?(print_r)?(var_dump)?' ;;
     [jJ][sS])
         logString='console.log' ;;
     *)
